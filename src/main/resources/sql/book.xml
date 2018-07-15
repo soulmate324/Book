@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.anne.dao.IBookDao">
+	<resultMap id="userMap" type="com.anne.domain.Member">
+		<result column="account_id" property="accountId"/>
+		<result column="nick_name" property="nickName"/>
+		<result column="email" property="email"/>
+		<result column="passwd" property="passwd"/>
+	</resultMap>
+	
+	<resultMap id="historyMap" type="com.anne.domain.SearchHistory">
+		<result column="account_id" property="accountId"/>
+		<result column="query" property="query"/>
+		<result column="search_count" property="searchCount"/>
+		<result column="created" property="created"/>
+	</resultMap>
+	
+	<insert id="doRegist" parameterType="com.anne.domain.Member" useGeneratedKeys="true" keyProperty="accountId" keyColumn="account_id">
+		INSERT INTO member (nick_name, email, passwd) values (#{nickName}, #{email}, #{passwd})
+    </insert>
+    
+    <insert id="doSearch" parameterType="com.anne.domain.SearchHistory">
+		INSERT INTO search_history (account_id, query, search_count) values (#{accountId}, #{query}, #{searchCount})
+    </insert>
+	
+	<select id="getLogin" parameterType="com.anne.domain.Member" resultMap="userMap">
+		<![CDATA[
+			SELECT account_id, nick_name, passwd FROM member WHERE email = #{email}
+		]]>
+	</select>
+	
+	<select id="getHistory" parameterType="int" resultMap="historyMap">
+		<![CDATA[
+			SELECT account_id, query, search_count, created FROM search_history WHERE account_id = ${accountId}
+		]]>
+	</select>
+</mapper>
